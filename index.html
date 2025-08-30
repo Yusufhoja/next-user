@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Info</title>
+  <link rel="stylesheet" href="style.css">
+  <style>body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
+.user-info {
+  text-align: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+}
+
+#user-picture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+</style>
+</head>
+<body>
+  <div class="user-info">
+    <img id="user-picture" src="" alt="User Image">
+    <h2 id="user-name"></h2>
+    <p id="user-address"></p>
+    <p id="user-phone"></p>
+    <button id="next-user-button">Next User</button>
+  </div>
+<script>
+
+const apiURL = "https://randomuser.me/api/";
+
+let userData = []; 
+let currentUserIndex = 0;  
+
+async function fetchUserData() {
+  try {
+    const response = await fetch(apiURL + "?results=5"); 
+    const data = await response.json();
+    userData = data.results;
+    displayUserInfo(userData[currentUserIndex]);  
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+}
+
+function displayUserInfo(user) {
+  const userName = document.getElementById("user-name");
+  const userAddress = document.getElementById("user-address");
+  const userPhone = document.getElementById("user-phone");
+  const userPicture = document.getElementById("user-picture");
+
+  userName.textContent = `${user.name.first} ${user.name.last}`;
+  userAddress.textContent = `${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country}`;
+  userPhone.textContent = `Phone: ${user.phone}`;
+  userPicture.src = user.picture.large;
+}
+
+document.getElementById("next-user-button").addEventListener("click", () => {
+  currentUserIndex = (currentUserIndex + 1) % userData.length;  
+  displayUserInfo(userData[currentUserIndex]);
+});
+
+
+fetchUserData();
+
+</script>
+  <script src="script.js"></script>
+</body>
+</html>
